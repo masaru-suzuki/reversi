@@ -24,6 +24,7 @@ const app = express();
 
 app.use(morgan('dev'));
 app.use(express.static('public', { extensions: ['html'] }));
+app.use(express.json());
 
 app.get('/api/hello', async (req, res) => {
   res.json({
@@ -133,6 +134,95 @@ app.get('/api/games/latest/turns/:turnCount', async (req, res) => {
   } finally {
     conn.end();
   }
+});
+
+app.post('/api/games/latest/turns/', async (req, res) => {
+  // 一つ前のターンの情報を取得する
+  const turnCount = parseInt(req.body.turnCount);
+  const disc = parseInt(req.body.move.disc);
+  const x = parseInt(req.body.move.x);
+  const y = parseInt(req.body.move.y);
+  console.log({ turnCount }, { disc }, { x }, { y });
+
+  const conn = await connectMySql();
+
+  try {
+    await conn.beginTransaction();
+
+    const gameSelectResult = await conn.execute<mysql.RowDataPacket[]>(
+      'select id, started_at from games order by id desc limit 1'
+    );
+
+    const game = gameSelectResult[0][0];
+    console.log({ game });
+    console.log('game!!!');
+
+    const previousTurnCount = turnCount - 1;
+    const turnSelectResult = await conn.execute<mysql.RowDataPacket[]>(
+      'select id, game_id,turn_count, next_disc, end_at from turns where game_id = ? and turn_count = ?',
+      [game['id'], previousTurnCount]
+    );
+
+    const turn = turnSelectResult[0][0];
+
+    const squaresSelectResult = await conn.execute<mysql.RowDataPacket[]>(
+      `select id, turn_id, x, y, disc from squares where turn_id = ?`,
+      [turn['id']]
+    );
+
+    const squares = squaresSelectResult[0];
+
+    const board = Array.from(Array(8)).map(() => Array(8));
+    squares.forEach((square) => {
+      board[square['y']][square['x']] = square.disc;
+    });
+
+    // 盤面に置けるかチェックする
+
+    // 石を置く
+
+    board[y][x] = disc;
+    console.log(board);
+
+    // ひっくり返す
+
+    // ターンを保存する
+    const now = new Date();
+    const nextDisc = disc === DARK ? LIGHT : DARK;
+    const turnInsertResult = await conn.execute<mysql.ResultSetHeader>(
+      'insert into turns (game_id, turn_count, next_disc, end_at) values (?, ?, ?, ?)',
+      [game['id'], turnCount, nextDisc, now]
+    );
+    const turnId = turnInsertResult[0].insertId;
+
+    const squareCount = board.map((line) => line.length).reduce((v1, v2) => v1 + v2, 0);
+
+    const squaresInsertSql =
+      'insert into squares (turn_id, x, y, disc) values ' +
+      Array.from(Array(squareCount))
+        .map(() => '(?, ?, ?, ?)')
+        .join(', ');
+
+    const squaresInsertValues: any[] = [];
+    board.forEach((line, y) => {
+      line.forEach((disc, x) => {
+        squaresInsertValues.push(turnId);
+        squaresInsertValues.push(x);
+        squaresInsertValues.push(y);
+        squaresInsertValues.push(disc);
+      });
+    });
+
+    await conn.execute(squaresInsertSql, squaresInsertValues);
+    await conn.execute('insert into moves (turn_id, disc, x, y) values (?, ?, ?, ?)', [turnId, disc, x, y]);
+
+    await conn.commit();
+  } finally {
+    conn.end();
+  }
+
+  // バグの原因！この記述がなかったら処理が終わっても、レスポンスを返さない
+  res.status(201).end();
 });
 
 app.use(errorHandler);
