@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    /* Base directory to resolve non-absolute module names. */
+    "baseUrl": "./",
+    /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
+    "paths": {
+      "@Config": ["./config"],
+      "@Server/*": ["./server/*"]
+    },
+    "esModuleInterop": true
+  }
+}

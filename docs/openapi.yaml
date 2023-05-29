@@ -1,0 +1,110 @@
+openapi: 3.0.3
+
+info:
+  title: udemy-reversi-webapp
+  version: 1.0.0
+
+paths:
+  /api/games:
+    get:
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  games:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        winnerDisc:
+                          type: integer
+                          example: 0
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: 2021-01-01T00:00:00+09:00
+    post:
+      responses:
+        201:
+          description: Created
+
+  /api/games/latest/turns/{turnCount}:
+    parameters:
+      - name: turnCount
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 0
+
+    get:
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  turnCount:
+                    type: integer
+                    minimum: 0
+                    example: 1
+                  board:
+                    type: array
+                    example:
+                      [
+                        [0, 0, 0, 0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 0, 0, 0, 0],
+                        [0, 0, 0, 1, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 1, 0, 0, 0],
+                        [0, 0, 0, 0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 0, 0, 0, 0],
+                      ]
+                  nextDisc:
+                    type: integer
+                    example: 1
+                  winnerDisc:
+                    type: integer
+                    example: 0
+
+  /api/games/latest/turns:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                turnCount:
+                  type: integer
+                  minimum: 0
+                  example: 1
+                move:
+                  type: object
+                  properties:
+                    disc:
+                      type: integer
+                      example: 1
+                    x:
+                      type: integer
+                      minimum: 0
+                      maximum: 7
+                      example: 3
+                    y:
+                      type: integer
+                      minimum: 0
+                      maximum: 7
+                      example: 2
+      responses:
+        201:
+          description: Created
