@@ -9,11 +9,11 @@ const boardElement = document.getElementById('board');
 const showBoard = async () => {
   const turnCount = 0;
   const response = await fetch(`/api/games/latest/turns/${turnCount}`);
-  const boardResponse = await response.json();
+  const responseBody = await response.json();
   // なぜ、awaitをつけるのか？
-  // なぜ、awaitをつけないと、boardResponseがPromiseオブジェクトになるのか？
+  // なぜ、awaitをつけないと、responseBodyがPromiseオブジェクトになるのか？
   // Answer: fetchはPromiseを返すため、awaitをつけないと、Promiseオブジェクトが返ってくる。
-  const board = boardResponse.board;
+  const board = responseBody.board;
 
   board.forEach((line) => {
     line.forEach((square) => {
