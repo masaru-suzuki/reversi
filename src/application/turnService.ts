@@ -19,8 +19,8 @@ class findLatestTurnByTurnCountOutput {
   constructor(
     private _turnCount: number,
     private _board: number[][],
-    private _nextDisc: number | null,
-    private _winnerDisc: number | null
+    private _nextDisc: number | undefined,
+    private _winnerDisc: number | undefined
   ) {}
 
   get turnCount() {
@@ -47,7 +47,9 @@ export class TurnService {
     try {
       const gameRecord = await gameGateway.findLatest(conn);
 
-      if (!gameRecord) throw new Error('GameRecordが見つかりませんでした');
+      if (!gameRecord) {
+        throw new Error('GameRecordが見つかりませんでした');
+      }
 
       const turnRecord = await turnGateway.findForGameIdAndTurnCount(conn, gameRecord.id, turnCount);
 
@@ -78,7 +80,7 @@ export class TurnService {
       // res.json(responseBody);
     } finally {
       // connectionの切断についてはサービスクラスで行ってもいい
-      conn.end();
+      await conn.end();
     }
   }
 
@@ -90,9 +92,17 @@ export class TurnService {
 
       const gameRecord = await gameGateway.findLatest(conn);
 
+      if (!gameRecord) {
+        throw new Error('Latest game not found');
+      }
+
       const previousTurnCount = turnCount - 1;
 
       const previousTurnRecord = await turnGateway.findForGameIdAndTurnCount(conn, gameRecord.id, previousTurnCount);
+
+      if (!previousTurnRecord) {
+        throw new Error('Specified turn not found');
+      }
 
       const squareRecords = await squareGateway.findForTurnId(conn, previousTurnRecord.id);
 
@@ -103,7 +113,7 @@ export class TurnService {
 
       const previousTurn = new Turn(
         gameRecord.id,
-        turnCount,
+        previousTurnCount,
         // previousTurnRecord.nextDisc, // これだとエラー。ここむずい！
         toDisc(previousTurnRecord.nextDisc), // disc.tsで定義した関数を使う。なんで？
         undefined, // moveはまだない
@@ -131,7 +141,7 @@ export class TurnService {
 
       await conn.commit();
     } finally {
-      conn.end();
+      await conn.end();
     }
   }
 }
