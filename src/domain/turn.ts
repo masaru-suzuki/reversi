@@ -28,4 +28,24 @@ export class Turn {
 
     return new Turn(this._gameId, this._turnCount + 1, nextDisc, move, newBoard, new Date());
   }
+
+  get gameId() {
+    return this._gameId;
+  }
+
+  get turnCount() {
+    return this._turnCount;
+  }
+
+  get nextDisc() {
+    return this._nextDisc;
+  }
+
+  get endAt() {
+    return this._endAt;
+  }
+
+  get board() {
+    return this._board;
+  }
 }
