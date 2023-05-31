@@ -1,5 +1,5 @@
 import express from 'express';
-import { DARK, INITIAL_BOARD } from '../application/constants';
+import { DARK, INITIAL_BOARD } from './constants';
 import { connectMySql } from '../dataaccess/connection';
 import { GameGateway } from '../dataaccess/gameGateway';
 import { SquareGateway } from '../dataaccess/squareGateway';

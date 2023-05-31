@@ -1,11 +1,14 @@
 import express from 'express';
-import { DARK, LIGHT } from '../application/constants';
+import { DARK, LIGHT } from './constants';
 import { connectMySql } from '../dataaccess/connection';
 import { GameGateway } from '../dataaccess/gameGateway';
 import { MoveGateway } from '../dataaccess/moveGateway';
 import { SquareGateway } from '../dataaccess/squareGateway';
 import { TurnGateway } from '../dataaccess/turnGateway';
-import { Turn } from 'src/domain/turn';
+import { Turn } from '../domain/turn';
+import { toDisc } from '../domain/disc';
+import { Board } from '../domain/board';
+import { Point } from '../domain/point';
 
 const gameGateway = new GameGateway();
 const turnGateway = new TurnGateway();
@@ -48,6 +51,12 @@ export class TurnService {
 
       const turnRecord = await turnGateway.findForGameIdAndTurnCount(conn, gameRecord.id, turnCount);
 
+      console.log({ turnRecord });
+
+      if (!turnRecord) {
+        throw new Error('Specified turn not found');
+      }
+
       const squareRecords = await squareGateway.findForTurnId(conn, turnRecord.id);
 
       const board = Array.from(Array(8)).map(() => Array(8));
@@ -55,7 +64,13 @@ export class TurnService {
         board[square.y][square.x] = square.disc;
       });
 
-      const responseBody = new findLatestTurnByTurnCountOutput(turnCount, board, turnRecord.nextDisc, undefined);
+      const responseBody = new findLatestTurnByTurnCountOutput(
+        turnCount,
+        board,
+        turnRecord.nextDisc,
+        // TODO 決着がついている場合、game_results テーブルから取得する
+        undefined
+      );
 
       return responseBody;
       // サービスクラスでレスポンスを返すのはおかしいので、responseBodyを返す
@@ -89,28 +104,30 @@ export class TurnService {
       const previousTurn = new Turn(
         gameRecord.id,
         turnCount,
-        previousTurnRecord.nextDisc, // これだとエラーここむずい！
+        // previousTurnRecord.nextDisc, // これだとエラー。ここむずい！
+        toDisc(previousTurnRecord.nextDisc), // disc.tsで定義した関数を使う。なんで？
         undefined, // moveはまだない
-        board,
+        new Board(board), // boardを直接渡すとエラーになるようにしている
         previousTurnRecord.endAt
       );
 
       // 盤面に置けるかチェックする
 
       // 石を置く
-
-      board[y][x] = disc;
-
-      // ひっくり返す
+      const newTurn = previousTurn.placeNext(toDisc(disc), new Point(x, y));
 
       // ターンを保存する
-      const now = new Date();
-      const nextDisc = disc === DARK ? LIGHT : DARK;
-      const turnRecord = await turnGateway.insert(conn, gameRecord.id, turnCount, nextDisc, now);
+      const turnRecord = await turnGateway.insert(
+        conn,
+        newTurn.gameId,
+        newTurn.turnCount,
+        newTurn.nextDisc,
+        newTurn.endAt
+      );
 
-      await squareGateway.insertAll(conn, turnRecord.id, board);
+      await squareGateway.insertAll(conn, turnRecord.id, newTurn.board.discs);
 
-      moveGateway.insert(conn, turnRecord.id, disc, x, y);
+      await moveGateway.insert(conn, turnRecord.id, disc, x, y);
 
       await conn.commit();
     } finally {
