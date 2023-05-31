@@ -4,7 +4,7 @@ export class SquareRecord {
     private _turnId: number,
     private _x: number,
     private _y: number,
-    private _disk: number
+    private _disc: number
   ) {}
 
   get x() {
@@ -16,6 +16,6 @@ export class SquareRecord {
   }
 
   get disc() {
-    return this._disk;
+    return this._disc;
   }
 }

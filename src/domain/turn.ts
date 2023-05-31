@@ -1,5 +1,5 @@
 import { Board } from './board';
-import { Disc } from './disk';
+import { Disc } from './disc';
 import { Move } from './move';
 import { Point } from './point';
 

@@ -1,4 +1,4 @@
-import { Disc } from './disk';
+import { Disc } from './disc';
 import { Move } from './move';
 
 export class Board {
@@ -19,5 +19,9 @@ export class Board {
 
     // ボードを返す
     return new Board(newBoard);
+  }
+
+  get discs() {
+    return this._discs;
   }
 }

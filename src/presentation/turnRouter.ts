@@ -5,7 +5,7 @@ import { GameGateway } from '../dataaccess/gameGateway';
 import { MoveGateway } from '../dataaccess/moveGateway';
 import { SquareGateway } from '../dataaccess/squareGateway';
 import { TurnGateway } from '../dataaccess/turnGateway';
-import { TurnService } from './turnService';
+import { TurnService } from '../application/turnService';
 
 export const turnRouter = express.Router();
 

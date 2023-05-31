@@ -3,7 +3,7 @@ export class TurnRecord {
     private _id: number,
     private _gameId: number,
     private _turnCount: number,
-    private _nextDisk: number,
+    private _nextDisc: number,
     private _endAt: Date
   ) {}
 
@@ -12,7 +12,7 @@ export class TurnRecord {
   }
 
   get nextDisc() {
-    return this._nextDisk;
+    return this._nextDisc;
   }
 
   get endAt() {
