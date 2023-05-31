@@ -5,6 +5,7 @@ import { GameGateway } from '../dataaccess/gameGateway';
 import { MoveGateway } from '../dataaccess/moveGateway';
 import { SquareGateway } from '../dataaccess/squareGateway';
 import { TurnGateway } from '../dataaccess/turnGateway';
+import { Turn } from 'src/domain/turn';
 
 const gameGateway = new GameGateway();
 const turnGateway = new TurnGateway();
@@ -84,6 +85,15 @@ export class TurnService {
       squareRecords.forEach((square) => {
         board[square.y][square.x] = square.disc;
       });
+
+      const previousTurn = new Turn(
+        gameRecord.id,
+        turnCount,
+        previousTurnRecord.nextDisc, // これだとエラーここむずい！
+        undefined, // moveはまだない
+        board,
+        previousTurnRecord.endAt
+      );
 
       // 盤面に置けるかチェックする
 
