@@ -89,6 +89,8 @@ export class TurnService {
 
       // ターンを保存する
       await turnRepository.turnRecord(conn, newTurn);
+
+      await conn.commit();
     } finally {
       await conn.end();
     }

@@ -53,7 +53,5 @@ export class TurnRepository {
     if (turn.move) {
       await moveGateway.insert(conn, turnRecord.id, turn.move.disc, turn.move.point.x, turn.move.point.y);
     }
-
-    await conn.commit();
   }
 }
