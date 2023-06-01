@@ -1,5 +1,5 @@
 import { TurnRepository } from '../domain/turn/turnRepository';
-import { connectMySql } from '../dataaccess/connection';
+import { connectMySql } from '../infrastructure/connection';
 import { firstTurn } from '../domain/turn/turn';
 import { GameRepository } from '../domain/game/gameRepository';
 import { Game } from '../domain/game/game';

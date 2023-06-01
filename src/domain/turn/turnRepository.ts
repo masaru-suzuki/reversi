@@ -1,11 +1,11 @@
 import { Board } from './board';
 import mysql from 'mysql2/promise';
-import { GameGateway } from '../../dataaccess/gameGateway';
-import { MoveGateway } from '../../dataaccess/moveGateway';
-import { SquareGateway } from '../../dataaccess/squareGateway';
-import { TurnGateway } from '../../dataaccess/turnGateway';
+import { GameGateway } from '../../infrastructure/gameGateway';
+import { MoveGateway } from '../../infrastructure/moveGateway';
+import { SquareGateway } from '../../infrastructure/squareGateway';
+import { TurnGateway } from '../../infrastructure/turnGateway';
 import { Move } from './move';
-import { MoveRecord } from '../../dataaccess/moveRecord';
+import { MoveRecord } from '../../infrastructure/moveRecord';
 import { toDisc } from './disc';
 import { Point } from './point';
 import { Turn } from './turn';
