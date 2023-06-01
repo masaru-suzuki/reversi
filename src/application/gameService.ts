@@ -24,6 +24,7 @@ export class GameService {
 
       const GameRecord = await gameGateway.insert(conn, now);
 
+      // TODO: firstTurnの知識はユースケース層で扱うものではない。domain層に移動する
       // ターンの初期化
       const firstTurn = new Turn(GameRecord.id, 0, Disc.DARK, undefined, new Board(INITIAL_BOARD), now);
 
