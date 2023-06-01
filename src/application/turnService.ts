@@ -1,3 +1,4 @@
+import { TurnRepository } from './../domain/turnRepository';
 import express from 'express';
 import { DARK, LIGHT } from './constants';
 import { connectMySql } from '../dataaccess/connection';
@@ -14,6 +15,7 @@ const gameGateway = new GameGateway();
 const turnGateway = new TurnGateway();
 const moveGateway = new MoveGateway();
 const squareGateway = new SquareGateway();
+const turnRepository = new TurnRepository();
 
 class findLatestTurnByTurnCountOutput {
   constructor(
@@ -53,25 +55,13 @@ export class TurnService {
         throw new Error('GameRecordが見つかりませんでした');
       }
 
-      const turnRecord = await turnGateway.findForGameIdAndTurnCount(conn, gameRecord.id, turnCount);
-
-      console.log({ turnRecord });
-
-      if (!turnRecord) {
-        throw new Error('Specified turn not found');
-      }
-
-      const squareRecords = await squareGateway.findForTurnId(conn, turnRecord.id);
-
-      const board = Array.from(Array(8)).map(() => Array(8));
-      squareRecords.forEach((square) => {
-        board[square.y][square.x] = square.disc;
-      });
+      const turn = await turnRepository.findForGameIdAndTurnCount(conn, gameRecord.id, turnCount);
+      console.log(turn);
 
       const responseBody = new findLatestTurnByTurnCountOutput(
         turnCount,
-        board,
-        turnRecord.nextDisc,
+        turn.board.discs, //turn.boardではない。board.tsを参照する
+        turn.nextDisc,
         // TODO 決着がついている場合、game_results テーブルから取得する
         undefined
       );
@@ -100,28 +90,7 @@ export class TurnService {
 
       const previousTurnCount = turnCount - 1;
 
-      const previousTurnRecord = await turnGateway.findForGameIdAndTurnCount(conn, gameRecord.id, previousTurnCount);
-
-      if (!previousTurnRecord) {
-        throw new Error('Specified turn not found');
-      }
-
-      const squareRecords = await squareGateway.findForTurnId(conn, previousTurnRecord.id);
-
-      const board = Array.from(Array(8)).map(() => Array(8));
-      squareRecords.forEach((square) => {
-        board[square.y][square.x] = square.disc;
-      });
-
-      const previousTurn = new Turn(
-        gameRecord.id,
-        previousTurnCount,
-        // previousTurnRecord.nextDisc, // これだとエラー。ここむずい！
-        toDisc(previousTurnRecord.nextDisc), // disc.tsで定義した関数を使う。なんで？
-        undefined, // moveはまだない
-        new Board(board), // boardを直接渡すとエラーになるようにしている
-        previousTurnRecord.endAt
-      );
+      const previousTurn = await turnRepository.findForGameIdAndTurnCount(conn, gameRecord.id, previousTurnCount);
 
       // 盤面に置けるかチェックする
 
