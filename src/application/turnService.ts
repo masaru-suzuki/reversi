@@ -45,6 +45,8 @@ export class TurnService {
     const conn = await connectMySql();
 
     try {
+      // MEMO: サービスクラスでdataaccess層への処理が多く、ユースケースの流れがわかりにくい
+      // このような場合は、domain層にRepositoryパターンを追加して、そこでデータへのアクセスを行う
       const gameRecord = await gameGateway.findLatest(conn);
 
       if (!gameRecord) {
