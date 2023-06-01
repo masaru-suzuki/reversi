@@ -1,4 +1,4 @@
-import { Board } from './board';
+import { Board, initial_board } from './board';
 import { Disc } from './disc';
 import { Move } from './move';
 import { Point } from './point';
@@ -53,3 +53,7 @@ export class Turn {
     return this._board;
   }
 }
+
+// gameServiceにあったfirstTurnの知識はユースケース層で扱うものではない。domain層に移動した。
+export const firstTurn = (gameId: number, endAt: Date): Turn =>
+  new Turn(gameId, 0, Disc.DARK, undefined, initial_board, endAt);
