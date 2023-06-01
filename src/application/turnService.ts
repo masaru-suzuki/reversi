@@ -88,7 +88,7 @@ export class TurnService {
       const newTurn = previousTurn.placeNext(toDisc(disc), new Point(x, y));
 
       // ターンを保存する
-      await turnRepository.turnRecord(conn, newTurn);
+      await turnRepository.save(conn, newTurn);
 
       await conn.commit();
     } finally {

@@ -44,7 +44,7 @@ export class TurnRepository {
     return new Turn(gameId, turnCount, toDisc(turnRecord.nextDisc), move, new Board(board), turnRecord.endAt);
   }
 
-  async turnRecord(conn: mysql.Connection, turn: Turn) {
+  async save(conn: mysql.Connection, turn: Turn) {
     const turnRecord = await turnGateway.insert(conn, turn.gameId, turn.turnCount, turn.nextDisc, turn.endAt);
 
     await squareGateway.insertAll(conn, turnRecord.id, turn.board.discs);
