@@ -98,19 +98,7 @@ export class TurnService {
       const newTurn = previousTurn.placeNext(toDisc(disc), new Point(x, y));
 
       // ターンを保存する
-      const turnRecord = await turnGateway.insert(
-        conn,
-        newTurn.gameId,
-        newTurn.turnCount,
-        newTurn.nextDisc,
-        newTurn.endAt
-      );
-
-      await squareGateway.insertAll(conn, turnRecord.id, newTurn.board.discs);
-
-      await moveGateway.insert(conn, turnRecord.id, disc, x, y);
-
-      await conn.commit();
+      await turnRepository.turnRecord(conn, newTurn);
     } finally {
       await conn.end();
     }

@@ -43,4 +43,17 @@ export class TurnRepository {
 
     return new Turn(gameId, turnCount, toDisc(turnRecord.nextDisc), move, new Board(board), turnRecord.endAt);
   }
+
+  async turnRecord(conn: mysql.Connection, turn: Turn) {
+    const turnRecord = await turnGateway.insert(conn, turn.gameId, turn.turnCount, turn.nextDisc, turn.endAt);
+
+    await squareGateway.insertAll(conn, turnRecord.id, turn.board.discs);
+
+    // MEMO: moveがない可能性がある
+    if (turn.move) {
+      await moveGateway.insert(conn, turnRecord.id, turn.move.disc, turn.move.point.x, turn.move.point.y);
+    }
+
+    await conn.commit();
+  }
 }
