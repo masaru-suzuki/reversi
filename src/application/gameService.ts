@@ -6,7 +6,7 @@ import { GameGateway } from '../dataaccess/gameGateway';
 import { SquareGateway } from '../dataaccess/squareGateway';
 import { TurnGateway } from '../dataaccess/turnGateway';
 import { Disc } from '../domain/disc';
-import { Board } from '../domain/board';
+import { Board, initial_board } from '../domain/board';
 import { Turn } from '../domain/turn';
 
 const gameGateway = new GameGateway();
@@ -26,7 +26,7 @@ export class GameService {
 
       // TODO: firstTurnの知識はユースケース層で扱うものではない。domain層に移動する
       // ターンの初期化
-      const firstTurn = new Turn(GameRecord.id, 0, Disc.DARK, undefined, new Board(INITIAL_BOARD), now);
+      const firstTurn = new Turn(GameRecord.id, 0, Disc.DARK, undefined, initial_board, now);
 
       // ターンの保存
       await turnRepository.save(conn, firstTurn);
