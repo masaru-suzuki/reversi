@@ -1,9 +1,9 @@
 import express from 'express';
 import 'express-async-errors';
 import morgan from 'morgan';
+import { PORT } from './application/constants';
 import { gameRouter } from './presentation/gameRouter';
 import { turnRouter } from './presentation/turnRouter';
-import { PORT } from './application/constants';
 
 const app = express();
 
@@ -11,13 +11,13 @@ app.use(morgan('dev'));
 app.use(express.static('public', { extensions: ['html'] }));
 app.use(express.json());
 
-app.get('/api/hello', async (req, res) => {
+app.get('/api/hello', async (_req, res) => {
   res.json({
     message: 'Hello Express!!!',
   });
 });
 
-app.get('/api/error', async (req, res) => {
+app.get('/api/error', async (_req, _res) => {
   throw new Error('Error endpoint');
 });
 

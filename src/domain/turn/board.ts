@@ -1,4 +1,3 @@
-import { INITIAL_BOARD } from 'src/application/constants';
 import { Disc } from './disc';
 import { Move } from './move';
 
