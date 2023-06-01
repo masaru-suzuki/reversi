@@ -1,20 +1,10 @@
-import { TurnRepository } from './../domain/turnRepository';
-import express from 'express';
-import { DARK, LIGHT } from './constants';
 import { connectMySql } from '../dataaccess/connection';
 import { GameGateway } from '../dataaccess/gameGateway';
-import { MoveGateway } from '../dataaccess/moveGateway';
-import { SquareGateway } from '../dataaccess/squareGateway';
-import { TurnGateway } from '../dataaccess/turnGateway';
-import { Turn } from '../domain/turn';
 import { toDisc } from '../domain/disc';
-import { Board } from '../domain/board';
 import { Point } from '../domain/point';
+import { TurnRepository } from './../domain/turnRepository';
 
 const gameGateway = new GameGateway();
-const turnGateway = new TurnGateway();
-const moveGateway = new MoveGateway();
-const squareGateway = new SquareGateway();
 const turnRepository = new TurnRepository();
 
 class findLatestTurnByTurnCountOutput {
