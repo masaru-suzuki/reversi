@@ -1,10 +1,8 @@
-export class GameRecord {
+// er.drawio を参考
+export class Game {
   constructor(private _id: number, private _startedAt: Date) {}
 
   get id() {
-    // ? startedAtは返さないの？
-    // 入れ物のクラス
-    // なぜ作るの？
     return this._id;
   }
 

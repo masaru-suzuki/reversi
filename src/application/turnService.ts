@@ -1,3 +1,4 @@
+import { GameRepository } from '../domain/game/gameRepository';
 import { connectMySql } from '../dataaccess/connection';
 import { GameGateway } from '../dataaccess/gameGateway';
 import { toDisc } from '../domain/turn/disc';
@@ -6,6 +7,7 @@ import { TurnRepository } from '../domain/turn/turnRepository';
 
 const gameGateway = new GameGateway();
 const turnRepository = new TurnRepository();
+const gameRepository = new GameRepository();
 
 class findLatestTurnByTurnCountOutput {
   constructor(
@@ -37,16 +39,12 @@ export class TurnService {
     const conn = await connectMySql();
 
     try {
-      // MEMO: サービスクラスでdataaccess層への処理が多く、ユースケースの流れがわかりにくい
-      // このような場合は、domain層にRepositoryパターンを追加して、そこでデータへのアクセスを行う
-      const gameRecord = await gameGateway.findLatest(conn);
+      const game = await gameRepository.findLatest(conn);
 
-      if (!gameRecord) {
-        throw new Error('GameRecordが見つかりませんでした');
-      }
+      if (!game) throw new Error('Latest game not found');
+      if (!game.id) throw new Error('game.id not exists');
 
-      const turn = await turnRepository.findForGameIdAndTurnCount(conn, gameRecord.id, turnCount);
-      console.log(turn);
+      const turn = await turnRepository.findForGameIdAndTurnCount(conn, game.id, turnCount);
 
       const responseBody = new findLatestTurnByTurnCountOutput(
         turnCount,
@@ -72,15 +70,14 @@ export class TurnService {
     try {
       await conn.beginTransaction();
 
-      const gameRecord = await gameGateway.findLatest(conn);
+      const game = await gameRepository.findLatest(conn);
 
-      if (!gameRecord) {
-        throw new Error('Latest game not found');
-      }
+      if (!game) throw new Error('Latest game not found');
+      if (!game.id) throw new Error('game.id not exists');
 
       const previousTurnCount = turnCount - 1;
 
-      const previousTurn = await turnRepository.findForGameIdAndTurnCount(conn, gameRecord.id, previousTurnCount);
+      const previousTurn = await turnRepository.findForGameIdAndTurnCount(conn, game.id, previousTurnCount);
 
       // 盤面に置けるかチェックする
 
