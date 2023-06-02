@@ -31,6 +31,9 @@ export class Board {
     newBoard[move.point.y][move.point.x] = move.disc;
 
     // ひっくり返す
+    flipPoints.forEach((point) => {
+      newBoard[point.y][point.x] = move.disc;
+    });
 
     // ボードを返す
     return new Board(newBoard);
@@ -42,7 +45,7 @@ export class Board {
 
     const flipPoints: Point[] = [];
 
-    //
+    // 壁を考慮した座標を計算する
     const walledX = move.point.x + 1;
     const walledY = move.point.y + 1;
 
