@@ -14,7 +14,6 @@ export class TurnGateway {
       [gameId, turnCount]
     );
     const record = turnSelectResult[0][0];
-    console.log({ record });
 
     if (!record) {
       return undefined;
