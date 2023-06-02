@@ -12,16 +12,6 @@ app.use(morgan('dev'));
 app.use(express.static('public', { extensions: ['html'] }));
 app.use(express.json());
 
-app.get('/api/hello', async (_req, res) => {
-  res.json({
-    message: 'Hello Express!!!',
-  });
-});
-
-app.get('/api/error', async (_req, _res) => {
-  throw new Error('Error endpoint');
-});
-
 app.use(gameRouter);
 app.use(turnRouter);
 app.use(errorHandler);
