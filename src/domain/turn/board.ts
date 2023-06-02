@@ -34,6 +34,8 @@ export class Board {
   }
 
   private listFlipPoints(move: Move): Point[] {
+    // 置いた石から斜めの8方向に向かって反対の色の石がある限り見ていく。
+    // 反対の石がなくなった時に、自分の色の石であれば間の石をひっくり返す
     return [new Point(1, 6)];
   }
 
