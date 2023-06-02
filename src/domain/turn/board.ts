@@ -1,8 +1,12 @@
 import { Disc } from './disc';
 import { Move } from './move';
+import { Point } from './point';
 
 export class Board {
-  constructor(private _discs: Disc[][]) {}
+  private _walledDiscs: Disc[][];
+  constructor(private _discs: Disc[][]) {
+    this._walledDiscs = this.wallDiscs();
+  }
 
   place(move: Move): Board {
     // すでに石が置いてある場合、置けない(からのマス目ではない場合、置けない)
@@ -27,6 +31,32 @@ export class Board {
 
     // ボードを返す
     return new Board(newBoard);
+  }
+
+  private listFlipPoints(move: Move): Point[] {
+    return [new Point(1, 6)];
+  }
+
+  // マス目を壁で囲んだ盤面を返す
+  private wallDiscs(): Disc[][] {
+    const walled: Disc[][] = [];
+
+    // 上と下の壁
+    const topAndBottomWall = Array(this._discs[0].length + 2).fill(Disc.WALL);
+
+    walled.push(topAndBottomWall);
+
+    // 真ん中の盤面
+    this._discs.forEach((line) => {
+      // 左右が壁で囲まれたライン
+      const walledLine = [Disc.WALL, ...line, Disc.WALL];
+      walled.push(walledLine);
+    });
+
+    // 下の壁
+    walled.push(topAndBottomWall);
+
+    return walled;
   }
 
   get discs() {
