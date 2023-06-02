@@ -3,7 +3,10 @@ import { Move } from './move';
 import { Point } from './point';
 
 export class Board {
+  // 盤兵を作ることで、配列の長さを考慮せず、ロジックが組める。
+  // 配列の長さを超えない限りwhile文で処理を回すが、方向性によって処理が複雑になるため、盤兵を作ることで、配列の長さを考慮せず、ロジックが組める。
   private _walledDiscs: Disc[][];
+
   constructor(private _discs: Disc[][]) {
     this._walledDiscs = this.wallDiscs();
   }
@@ -43,29 +46,43 @@ export class Board {
     const walledX = move.point.x + 1;
     const walledY = move.point.y + 1;
 
-    // 上方向の処理をする
-    const flipCandidate: Point[] = [];
+    // ひっくり返せる石を探す
+    // ロジックちょっとわかっていない。
+    const checkFlipPoints = (xMove: number, yMove: number) => {
+      const flipCandidate: Point[] = [];
 
-    // 1つ動いた位置から開始する
-    let cursorX = walledX;
-    let cursorY = walledY - 1;
+      // 1つ動いた位置から開始する
+      let cursorX = walledX + xMove;
+      let cursorY = walledY + yMove;
 
-    // 手と逆の石がある間1つずつ上に移動する
-    while (isOpposite(move.disc, this._walledDiscs[cursorY][cursorX])) {
-      console.log(move.disc, this._walledDiscs[cursorY][cursorX]);
+      // 手と逆の石がある間1つずつ上に移動する
+      while (isOpposite(move.disc, this._walledDiscs[cursorY][cursorX])) {
+        console.log(move.disc, this._walledDiscs[cursorY][cursorX]);
 
-      // 盤兵を考慮して-１する
-      flipCandidate.push(new Point(cursorX - 1, cursorY - 1));
+        // 盤兵を考慮して-１する
+        flipCandidate.push(new Point(cursorX - 1, cursorY - 1));
 
-      // 1つ上に移動する
-      cursorY--;
+        // 1つ上に移動する
+        cursorX += xMove;
+        cursorY += yMove;
 
-      // 次の手が同じ色なら、ひっくり返す石が確定する
-      if (move.disc === this._walledDiscs[cursorY][cursorX]) {
-        flipPoints.push(...flipCandidate);
-        break;
+        // 次の手が同じ色なら、ひっくり返す石が確定する
+        if (move.disc === this._walledDiscs[cursorY][cursorX]) {
+          flipPoints.push(...flipCandidate);
+          break;
+        }
       }
-    }
+    };
+
+    // 8方向に対してひっくり返せる石を探す
+    checkFlipPoints(0, -1); // 上
+    checkFlipPoints(0, 1); // 下
+    checkFlipPoints(-1, 0); // 左
+    checkFlipPoints(1, 0); // 右
+    checkFlipPoints(1, 1); // 右下
+    checkFlipPoints(1, -1); // 右上
+    checkFlipPoints(-1, 1); // 左下
+    checkFlipPoints(-1, -1); // 左上
 
     return flipPoints;
   }
