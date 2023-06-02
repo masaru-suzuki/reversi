@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import { PORT } from './application/constants';
 import { gameRouter } from './presentation/gameRouter';
 import { turnRouter } from './presentation/turnRouter';
+import { DomainError } from './domain/error/domainError';
 
 const app = express();
 
@@ -29,9 +30,28 @@ app.listen(PORT, () => {
   console.log(`Reversi application started: http://localhost:${PORT}`);
 });
 
-function errorHandler(err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) {
+interface ErrorResponseBody {
+  type: string;
+  message: string;
+}
+
+function errorHandler(
+  err: any,
+  _req: express.Request,
+  res: express.Response<ErrorResponseBody>,
+  _next: express.NextFunction
+) {
+  if (err instanceof DomainError) {
+    res.status(400).json({
+      type: err.type,
+      message: err.message,
+    });
+    return;
+  }
+
   console.error('Unexpected error occurred', err);
-  res.status(500).send({
+  res.status(500).json({
+    type: 'UnecpectedError',
     message: 'Unexpected error occurred',
   });
 }

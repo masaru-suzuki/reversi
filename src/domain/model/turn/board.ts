@@ -1,3 +1,4 @@
+import { DomainError } from '../../error/domainError';
 import { Disc, isOpposite } from './disc';
 import { Move } from './move';
 import { Point } from './point';
@@ -14,13 +15,13 @@ export class Board {
   place(move: Move): Board {
     // すでに石が置いてある場合、置けない(からのマス目ではない場合、置けない)
     if (this._discs[move.point.y][move.point.x] !== Disc.EMPTY)
-      throw new Error('すでに石が置いてある場所には置けません');
+      throw new DomainError('SelectedPointIsNotEmpty', 'すでに石が置いてある場所には置けません');
 
     // 石をひっくり返せる点をリストアップする
     const flipPoints = this.listFlipPoints(move);
 
     // 石をひっくり返せる点がない場合、置けない
-    if (flipPoints.length === 0) throw new Error('石をひっくり返せる点がありません');
+    if (flipPoints.length === 0) throw new DomainError('FlipPointsIsEmpty', '石をひっくり返せる点がありません');
 
     // ボードをコピーする(バグに繋がらないようにするため)
     const newBoard = this._discs.map((line) => {

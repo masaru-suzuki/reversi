@@ -1,3 +1,4 @@
+import { DomainError } from '../../error/domainError';
 import { Board, initial_board } from './board';
 import { Disc } from './disc';
 import { Move } from './move';
@@ -14,9 +15,9 @@ export class Turn {
   ) {}
 
   placeNext(disc: Disc, point: Point): Turn {
-    // TODO: 次の石ではない場合は、エラーを返す
+    // 打とうとした石が次の石ではない場合、エラーを返す
     if (disc !== this._nextDisc) {
-      throw new Error('次の石ではありません');
+      throw new DomainError('SelectedDiscIsNotNextDisc', '次の石ではありません');
     }
 
     const move = new Move(disc, point);

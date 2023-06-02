@@ -1,8 +1,8 @@
-import { GameRepository } from '../domain/game/gameRepository';
+import { GameRepository } from '../domain/model/game/gameRepository';
 import { connectMySql } from '../infrastructure/connection';
-import { toDisc } from '../domain/turn/disc';
-import { Point } from '../domain/turn/point';
-import { TurnRepository } from '../domain/turn/turnRepository';
+import { toDisc } from '../domain/model/turn/disc';
+import { Point } from '../domain/model/turn/point';
+import { TurnRepository } from '../domain/model/turn/turnRepository';
 
 const turnRepository = new TurnRepository();
 const gameRepository = new GameRepository();
