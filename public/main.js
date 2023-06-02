@@ -5,6 +5,7 @@ const DARK = 1;
 const LIGHT = 2;
 
 const boardElement = document.getElementById('board');
+const nextDiscElement = document.getElementById('next-disc-message');
 
 const showBoard = async (turnCount) => {
   const response = await fetch(`/api/games/latest/turns/${turnCount}`);
@@ -15,6 +16,8 @@ const showBoard = async (turnCount) => {
   const board = responseBody.board;
   const nextDisc = responseBody.nextDisc;
   // turnCount = responseBody.turnCount;
+
+  showNextDiscMessage(nextDisc);
 
   // 版を初期化
   while (boardElement.firstChild) {
@@ -36,16 +39,27 @@ const showBoard = async (turnCount) => {
       } else {
         squareElement.addEventListener('click', async () => {
           const nextTurnCount = turnCount + 1;
-          await registerTurn(nextTurnCount, nextDisc, x, y);
+          const registerTurnResponse = await registerTurn(nextTurnCount, nextDisc, x, y);
 
-          // なぜ、awaitをつけるのか？
-          await showBoard(nextTurnCount);
+          if (registerTurnResponse.ok) {
+            // なぜ、awaitをつけるのか？
+            await showBoard(nextTurnCount);
+          }
         });
       }
 
       boardElement.appendChild(squareElement);
     });
   });
+};
+
+const showNextDiscMessage = (nextDisc) => {
+  if (nextDisc) {
+    const color = nextDisc === DARK ? '黒' : '白';
+    nextDiscElement.textContent = `次は${color}の番です`;
+  } else {
+    nextDiscElement.textContent = '';
+  }
 };
 
 const registerGame = async () => {
@@ -64,7 +78,7 @@ async function registerTurn(turnCount, disc, x, y) {
     },
   };
 
-  await fetch('/api/games/latest/turns', {
+  return await fetch('/api/games/latest/turns', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
