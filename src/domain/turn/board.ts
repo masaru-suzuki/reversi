@@ -5,7 +5,9 @@ export class Board {
   constructor(private _discs: Disc[][]) {}
 
   place(move: Move): Board {
-    // 盤面に石を置けるかチェックする
+    // すでに石が置いてある場合、置けない(からのマス目ではない場合、置けない)
+    // 石をひっくり返せる点をリストアップする
+    // 石をひっくり返せる点がない場合、置けない
 
     // ボードをコピーする(バグに繋がらないようにするため)
     const newBoard = this._discs.map((line) => {
