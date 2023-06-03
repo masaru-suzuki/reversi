@@ -9,8 +9,9 @@ import { ApplicationError } from '../error/applicationError';
 import { GameResult } from '../../domain/model/gameResult/gameResult';
 import { gameMySQLRepository } from '../../infrastructure/repository/game/gameMySQLRepository';
 import { GameResultMySQLRepository } from '../../infrastructure/repository/gameResult/gameResultMySQLRepository';
+import { TurnMySQLRepository } from '../../infrastructure/repository/trun/turnMySQLRepository';
 
-const turnRepository = new TurnRepository();
+const turnRepository = new TurnMySQLRepository();
 const gameRepository = new gameMySQLRepository();
 const gameResultRepository = new GameResultMySQLRepository();
 

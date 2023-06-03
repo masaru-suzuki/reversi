@@ -4,8 +4,9 @@ import { firstTurn } from '../../domain/model/turn/turn';
 import { Game } from '../../domain/model/game/game';
 import { ApplicationError } from '../error/applicationError';
 import { gameMySQLRepository } from '../../infrastructure/repository/game/gameMySQLRepository';
+import { TurnMySQLRepository } from '../../infrastructure/repository/trun/turnMySQLRepository';
 
-const turnRepository = new TurnRepository();
+const turnRepository = new TurnMySQLRepository();
 const gameRepository = new gameMySQLRepository();
 
 export class GameService {
