@@ -53,10 +53,11 @@ const showBoard = async (turnCount) => {
   });
 };
 
+const discToString = (disc) => (disc === DARK ? '黒' : '白');
+
 const showNextDiscMessage = (nextDisc) => {
   if (nextDisc) {
-    const color = nextDisc === DARK ? '黒' : '白';
-    nextDiscElement.textContent = `次は${color}の番です`;
+    nextDiscElement.textContent = `次は${discToString(nextDisc)}の番です`;
   } else {
     nextDiscElement.textContent = '';
   }
