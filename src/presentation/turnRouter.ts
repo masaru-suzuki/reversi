@@ -1,6 +1,7 @@
 import express from 'express';
 import { TurnService } from '../application/service/turnService';
 import { Point } from '../domain/model/turn/point';
+import { toDisc } from '../domain/model/turn/disc';
 
 export const turnRouter = express.Router();
 
@@ -44,7 +45,7 @@ turnRouter.post('/api/games/latest/turns/', async (req: express.Request<{}, {}, 
   // MEMO: 不正な値かどうかをバリデーションする時に、ここでバリデーションするのもいいが、
   // アプリケーションが大きくなると、他の箇所でもバリデーションをする可能性が高いため、x,yについてはpoint.tsでバリデーションを行う
   const turnCount = req.body.turnCount;
-  const disc = req.body.move.disc;
+  const disc = toDisc(req.body.move.disc);
   const point = new Point(req.body.move.x, req.body.move.y); // Pointクラスでバリデーションを行う
 
   await turnService.registerTurn(turnCount, disc, point);
