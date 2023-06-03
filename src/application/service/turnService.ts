@@ -8,10 +8,11 @@ import { TurnRepository } from '../../domain/model/turn/turnRepository';
 import { ApplicationError } from '../error/applicationError';
 import { GameResult } from '../../domain/model/gameResult/gameResult';
 import { gameMySQLRepository } from '../../infrastructure/repository/game/gameMySQLRepository';
+import { GameResultMySQLRepository } from '../../infrastructure/repository/gameResult/gameResultMySQLRepository';
 
 const turnRepository = new TurnRepository();
 const gameRepository = new gameMySQLRepository();
-const gameResultRepository = new GameResultRepository();
+const gameResultRepository = new GameResultMySQLRepository();
 
 class findLatestTurnByTurnCountOutput {
   constructor(

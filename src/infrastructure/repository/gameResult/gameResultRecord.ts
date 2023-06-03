@@ -1,4 +1,4 @@
-import { WinnerDisc } from '../domain/model/gameResult/winnerDisc';
+import { WinnerDisc } from '../../../domain/model/gameResult/winnerDisc';
 
 export class gameResultRecord {
   constructor(private _id: number, private _gameId: number, private _winnerDisc: WinnerDisc, private _endAt: Date) {}

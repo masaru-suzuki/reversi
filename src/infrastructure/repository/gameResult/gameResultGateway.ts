@@ -1,6 +1,6 @@
 import mysql from 'mysql2/promise';
 import { gameResultRecord } from './gameResultRecord';
-import { GameResult } from '../domain/model/gameResult/gameResult';
+import { GameResult } from '../../../domain/model/gameResult/gameResult';
 export class GameResultGateway {
   async findForGameId(conn: mysql.Connection, gameId: number): Promise<gameResultRecord | undefined> {
     const gameSelectResult = await conn.execute<mysql.RowDataPacket[]>(

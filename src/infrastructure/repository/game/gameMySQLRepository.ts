@@ -1,6 +1,6 @@
 import mysql from 'mysql2/promise';
 import { GameResult } from '../../../domain/model/gameResult/gameResult';
-import { GameResultGateway } from '../../gameResultGateway';
+import { GameResultGateway } from '../gameResult/gameResultGateway';
 import { toWinnerDisc } from '../../../domain/model/gameResult/winnerDisc';
 import { GameRepository } from '../../../domain/model/game/gameRepository';
 import { Game } from '../../../domain/model/game/game';
