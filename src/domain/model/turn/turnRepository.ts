@@ -41,8 +41,8 @@ export class TurnRepository {
     }
 
     // プロパティって頭に入っているの？講義だとすんなり渡しているけど、どこでプロパティを定義しているのか、覚えていられない。
-
-    return new Turn(gameId, turnCount, toDisc(turnRecord.nextDisc), move, new Board(board), turnRecord.endAt);
+    const nextDisc = turnRecord.nextDisc === null ? undefined : toDisc(turnRecord.nextDisc);
+    return new Turn(gameId, turnCount, nextDisc, move, new Board(board), turnRecord.endAt);
   }
 
   async save(conn: mysql.Connection, turn: Turn) {
