@@ -25,9 +25,26 @@ export class Turn {
     const newBoard = this._board.place(move);
 
     // TODO: 石を置けない場合はスキップする
-    const nextDisc = this._nextDisc === Disc.DARK ? Disc.LIGHT : Disc.DARK;
+    const nextDisc = this.decideNextDisc(newBoard, disc);
 
     return new Turn(this._gameId, this._turnCount + 1, nextDisc, move, newBoard, new Date());
+  }
+
+  private decideNextDisc(board: Board, disc: Disc): Disc {
+    const existDarkValidMove = board.existValidMove(Disc.DARK);
+    const existLightValidMove = board.existValidMove(Disc.LIGHT);
+
+    if (existDarkValidMove && existLightValidMove) {
+      // 両方置ける場合は前の石と反対の色
+      return disc === Disc.DARK ? Disc.LIGHT : Disc.DARK;
+    } else if (!existDarkValidMove && !existLightValidMove) {
+      // どちらも置けない場合、次の石はない
+      return undefined;
+    } else if (existDarkValidMove) {
+      return Disc.DARK;
+    } else {
+      return Disc.LIGHT;
+    }
   }
 
   get gameId() {

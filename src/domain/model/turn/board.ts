@@ -113,6 +113,11 @@ export class Board {
     return walled;
   }
 
+  existValidMove(disc: Disc): boolean {
+    // TODO: とりあえず置けることにする
+    return true;
+  }
+
   get discs() {
     return this._discs;
   }
