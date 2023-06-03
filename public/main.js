@@ -4,10 +4,15 @@ const EMPTY = 0;
 const DARK = 1;
 const LIGHT = 2;
 
+const WINNER_DRAW = 0;
+const WINNER_DARK = 1;
+const WINNER_LIGHT = 2;
+
 const boardElement = document.getElementById('board');
 const nextDiscElement = document.getElementById('next-disc-message');
+const warningMessageElement = document.getElementById('warning-message');
 
-const showBoard = async (turnCount) => {
+const showBoard = async (turnCount, previousDisc) => {
   const response = await fetch(`/api/games/latest/turns/${turnCount}`);
   const responseBody = await response.json();
   // なぜ、awaitをつけるのか？
@@ -15,7 +20,10 @@ const showBoard = async (turnCount) => {
   // Answer: fetchはPromiseを返すため、awaitをつけないと、Promiseオブジェクトが返ってくる。
   const board = responseBody.board;
   const nextDisc = responseBody.nextDisc;
+  const winnerDisc = responseBody.winnerDisc;
   // turnCount = responseBody.turnCount;
+
+  showWarningMessage(previousDisc, nextDisc, winnerDisc);
 
   showNextDiscMessage(nextDisc);
 
@@ -43,7 +51,7 @@ const showBoard = async (turnCount) => {
 
           if (registerTurnResponse.ok) {
             // なぜ、awaitをつけるのか？
-            await showBoard(nextTurnCount);
+            await showBoard(nextTurnCount, nextDisc);
           }
         });
       }
@@ -54,6 +62,35 @@ const showBoard = async (turnCount) => {
 };
 
 const discToString = (disc) => (disc === DARK ? '黒' : '白');
+
+const showWarningMessage = (previousDisc, nextDisc, winnerDisc) => {
+  const message = warningMessage(previousDisc, nextDisc, winnerDisc);
+
+  warningMessageElement.textContent = message;
+
+  if (message === null) {
+    warningMessageElement.style.display = 'none';
+  } else {
+    warningMessageElement.style.display = 'block';
+  }
+};
+
+const warningMessage = (previousDisc, nextDisc, winnerDisc) => {
+  if (nextDisc !== null) {
+    if (previousDisc === nextDisc) {
+      const skippedDisc = nextDisc === DARK ? LIGHT : DARK;
+      return `${discToString(skippedDisc)}の番はスキップです`;
+    } else {
+      return null;
+    }
+  } else {
+    if (winnerDisc === WINNER_DRAW) {
+      return '引き分けです';
+    } else {
+      return `${discToString(winnerDisc)}の勝ちです`;
+    }
+  }
+};
 
 const showNextDiscMessage = (nextDisc) => {
   if (nextDisc) {
