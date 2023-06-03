@@ -63,7 +63,7 @@ export class TurnService {
     }
   }
 
-  async registerTurn(turnCount: number, disc: number, x: number, y: number) {
+  async registerTurn(turnCount: number, disc: number, point: Point) {
     const conn = await connectMySql();
 
     try {
@@ -81,7 +81,7 @@ export class TurnService {
       // 盤面に置けるかチェックする
 
       // 石を置く
-      const newTurn = previousTurn.placeNext(toDisc(disc), new Point(x, y));
+      const newTurn = previousTurn.placeNext(toDisc(disc), point);
 
       // ターンを保存する
       await turnRepository.save(conn, newTurn);
