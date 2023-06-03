@@ -7,9 +7,10 @@ import { Point } from '../../domain/model/turn/point';
 import { TurnRepository } from '../../domain/model/turn/turnRepository';
 import { ApplicationError } from '../error/applicationError';
 import { GameResult } from '../../domain/model/gameResult/gameResult';
+import { gameMySQLRepository } from '../../infrastructure/repository/game/gameMySQLRepository';
 
 const turnRepository = new TurnRepository();
-const gameRepository = new GameRepository();
+const gameRepository = new gameMySQLRepository();
 const gameResultRepository = new GameResultRepository();
 
 class findLatestTurnByTurnCountOutput {

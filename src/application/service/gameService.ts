@@ -1,12 +1,12 @@
 import { TurnRepository } from '../../domain/model/turn/turnRepository';
 import { connectMySql } from '../../infrastructure/connection';
 import { firstTurn } from '../../domain/model/turn/turn';
-import { GameRepository } from '../../domain/model/game/gameRepository';
 import { Game } from '../../domain/model/game/game';
 import { ApplicationError } from '../error/applicationError';
+import { gameMySQLRepository } from '../../infrastructure/repository/game/gameMySQLRepository';
 
 const turnRepository = new TurnRepository();
-const gameRepository = new GameRepository();
+const gameRepository = new gameMySQLRepository();
 
 export class GameService {
   async startNewGame() {

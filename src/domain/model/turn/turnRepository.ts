@@ -1,6 +1,6 @@
 import { Board } from './board';
 import mysql from 'mysql2/promise';
-import { GameGateway } from '../../../infrastructure/gameGateway';
+import { GameGateway } from '../../../infrastructure/repository/game/gameGateway';
 import { MoveGateway } from '../../../infrastructure/moveGateway';
 import { SquareGateway } from '../../../infrastructure/squareGateway';
 import { TurnGateway } from '../../../infrastructure/turnGateway';
