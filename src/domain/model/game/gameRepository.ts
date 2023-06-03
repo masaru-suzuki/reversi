@@ -1,5 +1,4 @@
 import mysql from 'mysql2/promise';
-import { GameGateway } from '../../../infrastructure/repository/game/gameGateway';
 import { Game } from './game';
 
 export interface GameRepository {

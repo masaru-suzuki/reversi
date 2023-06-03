@@ -1,11 +1,9 @@
 import { Board } from '../../../domain/model/turn/board';
 import mysql from 'mysql2/promise';
-import { GameGateway } from '../game/gameGateway';
 import { MoveGateway } from './moveGateway';
 import { SquareGateway } from './squareGateway';
 import { TurnGateway } from './turnGateway';
 import { Move } from '../../../domain/model/turn/move';
-import { MoveRecord } from './moveRecord';
 import { toDisc } from '../../../domain/model/turn/disc';
 import { Point } from '../../../domain/model/turn/point';
 import { Turn } from '../../../domain/model/turn/turn';
@@ -14,7 +12,6 @@ import { TurnRepository } from '../../../domain/model/turn/turnRepository';
 // turnServiceのfindLatestTurnByTurnCountで行っているデータアクセス層への処理（responseBodyで返すためのデータの取得）を、domain層にRepositoryパターンを追加して、そこでデータへのアクセスを行う。
 // これにより、turnServiceはデータアクセス層への処理を意識することなく、ドメインモデルの操作(処理の流れ)に集中できる。
 
-const gameGateway = new GameGateway();
 const turnGateway = new TurnGateway();
 const moveGateway = new MoveGateway();
 const squareGateway = new SquareGateway();
