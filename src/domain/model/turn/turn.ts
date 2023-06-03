@@ -3,6 +3,7 @@ import { Board, initial_board } from './board';
 import { Disc } from './disc';
 import { Move } from './move';
 import { Point } from './point';
+import { WinnerDisc } from '../gameResult/winnerDisc';
 
 export class Turn {
   constructor(
@@ -28,6 +29,23 @@ export class Turn {
     const nextDisc = this.decideNextDisc(newBoard, disc);
 
     return new Turn(this._gameId, this._turnCount + 1, nextDisc, move, newBoard, new Date());
+  }
+
+  gameEnded(): boolean {
+    return this._nextDisc === undefined;
+  }
+
+  winnerDisc(): WinnerDisc {
+    const darkCount = this._board.countDiscs(Disc.DARK);
+    const lightCount = this._board.countDiscs(Disc.LIGHT);
+
+    if (darkCount === lightCount) {
+      return WinnerDisc.DRAW;
+    } else if (darkCount > lightCount) {
+      return WinnerDisc.DARK;
+    } else {
+      return WinnerDisc.LIGHT;
+    }
   }
 
   private decideNextDisc(board: Board, disc: Disc): Disc {

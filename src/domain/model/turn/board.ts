@@ -134,6 +134,10 @@ export class Board {
     return false;
   }
 
+  countDiscs(disc: Disc): number {
+    return this._discs.map((line) => line.filter((discOnBoard) => discOnBoard === disc).length).reduce((a, b) => a + b);
+  }
+
   get discs() {
     return this._discs;
   }
