@@ -23,10 +23,20 @@ paths:
                         id:
                           type: integer
                           example: 1
+                        darkMoveCount:
+                          type: integer
+                          example: 1
+                        lightMoveCount:
+                          type: integer
+                          example: 1
                         winnerDisc:
                           type: integer
                           example: 0
-                        createdAt:
+                        startedAt:
+                          type: string
+                          format: date-time
+                          example: 2021-01-01T00:00:00+09:00
+                        endAt:
                           type: string
                           format: date-time
                           example: 2021-01-01T00:00:00+09:00
