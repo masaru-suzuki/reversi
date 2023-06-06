@@ -6,6 +6,10 @@ import { ApplicationError } from '../error/applicationError';
 import { gameMySQLRepository } from '../../infrastructure/repository/game/gameMySQLRepository';
 import { TurnMySQLRepository } from '../../infrastructure/repository/trun/turnMySQLRepository';
 
+// TurnMySQLRepositoryをインスタンス化しているので、サービスクラスがinfrastructure層に依存していることとなる
+// 解決策として、Dependency Injectionを使う
+// 依存性の注入とは、クラスの外部から依存するオブジェクトを渡すことで、クラス内部で依存オブジェクトを生成しないようにすること
+// connectMySqlはinfrastructure層に依存しているが、リポジトリへのconnectMySql依存は解消できている
 const turnRepository = new TurnMySQLRepository();
 const gameRepository = new gameMySQLRepository();
 
