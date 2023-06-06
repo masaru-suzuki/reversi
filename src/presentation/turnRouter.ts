@@ -1,5 +1,6 @@
 import express from 'express';
-import { TurnService } from '../application/service/turnService';
+import { RegisterTurnUseCase } from '../application/useCase/registerTurnUseCase';
+import { FindLatestTurnByTurnCountOutputUseCase } from '../application/useCase/findLatestTurnByTurnCountOutputUseCase';
 import { Point } from '../domain/model/turn/point';
 import { toDisc } from '../domain/model/turn/disc';
 import { TurnMySQLRepository } from '../infrastructure/repository/turn/turnMySQLRepository';
@@ -9,7 +10,13 @@ import { GameResultMySQLRepository } from '../infrastructure/repository/gameResu
 export const turnRouter = express.Router();
 
 // なぜここでインスタンス化するのか？
-const turnService = new TurnService(
+const registerTurnUseCase = new RegisterTurnUseCase(
+  new TurnMySQLRepository(),
+  new GameMySQLRepository(),
+  new GameResultMySQLRepository()
+);
+
+const findLatestTurnByTurnCountOutputUseCase = new FindLatestTurnByTurnCountOutputUseCase(
   new TurnMySQLRepository(),
   new GameMySQLRepository(),
   new GameResultMySQLRepository()
@@ -24,7 +31,7 @@ interface TurnGetResponseBody {
 
 turnRouter.get('/api/games/latest/turns/:turnCount', async (req, res: express.Response<TurnGetResponseBody>) => {
   const turnCount = parseInt(req.params.turnCount);
-  const output = await turnService.findLatestTurnByTurnCount(turnCount);
+  const output = await findLatestTurnByTurnCountOutputUseCase.run(turnCount);
 
   const responseBody = {
     turnCount: output.turnCount,
@@ -55,7 +62,7 @@ turnRouter.post('/api/games/latest/turns/', async (req: express.Request<{}, {}, 
   const disc = toDisc(req.body.move.disc);
   const point = new Point(req.body.move.x, req.body.move.y); // Pointクラスでバリデーションを行う
 
-  await turnService.registerTurn(turnCount, disc, point);
+  await registerTurnUseCase.run(turnCount, disc, point);
 
   // バグの原因！この記述がなかったら処理が終わっても、レスポンスを返さない
   res.status(201).end();

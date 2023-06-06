@@ -1,5 +1,5 @@
 import express from 'express';
-import { GameService } from '../application/service/gameService';
+import { StartNewGameUseCase } from '../application/useCase/startNewGameUseCase';
 import { TurnMySQLRepository } from '../infrastructure/repository/turn/turnMySQLRepository';
 import { GameMySQLRepository } from '../infrastructure/repository/game/gameMySQLRepository';
 
@@ -7,9 +7,9 @@ export const gameRouter = express.Router();
 
 // 依存性の注入とは、クラスの外部から依存するオブジェクトを渡すことで、クラス内部で依存オブジェクトを生成しないようにすること
 // プレゼンテーション層がinfrastructure層に依存しないようにするためには、DIContainerを使う
-const gameService = new GameService(new TurnMySQLRepository(), new GameMySQLRepository());
+const gameService = new StartNewGameUseCase(new TurnMySQLRepository(), new GameMySQLRepository());
 
 gameRouter.post('/api/games', async (req, res) => {
-  await gameService.startNewGame();
+  await gameService.run();
   res.status(201).end();
 });

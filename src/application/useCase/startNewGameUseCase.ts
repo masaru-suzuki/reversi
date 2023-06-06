@@ -1,4 +1,4 @@
-import { TurnRepository } from './../../domain/model/turn/turnRepository';
+import { TurnRepository } from '../../domain/model/turn/turnRepository';
 import { GameRepository } from '../../domain/model/game/gameRepository';
 import { connectMySql } from '../../infrastructure/connection';
 import { firstTurn } from '../../domain/model/turn/turn';
@@ -12,9 +12,9 @@ import { ApplicationError } from '../error/applicationError';
 // GameServiceのデータの参照先が変わったとしても、GameServiceのコードは変更する必要がない
 // 依存性の注入を行うことで、コードの変更に強いコードを書くことができる
 
-export class GameService {
+export class StartNewGameUseCase {
   constructor(private _turnRepository: TurnRepository, private _gameRepository: GameRepository) {}
-  async startNewGame() {
+  async run() {
     const now = new Date();
     const conn = await connectMySql();
 
