@@ -1,0 +1,17 @@
+import { connectMySql } from '../../infrastructure/connection';
+import { FindLastGamesQueryModel, FindLastGamesQueryService } from '../query/findLastGameQueryService';
+
+const FIND_COUNT = 10;
+
+export class FindLastGameUseCase {
+  constructor(private _queryService: FindLastGamesQueryService) {}
+
+  async run(): Promise<FindLastGamesQueryModel[]> {
+    const conn = await connectMySql();
+    try {
+      return await this._queryService.query(conn, FIND_COUNT);
+    } finally {
+      await conn.end();
+    }
+  }
+}

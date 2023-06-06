@@ -1,5 +1,7 @@
 const gamesTableBodyElement = document.getElementById('games-table-body');
 
+// MEMO: responseのデータをDBから既存のDBからまとめる際に、gameResult,turn,gameのリポジトリに跨ってデータを取得してループを回す必要がある。
+
 const showGames = async () => {
   const response = await fetch('/api/games');
   const responseBody = await response.json();
