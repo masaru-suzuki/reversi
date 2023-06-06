@@ -1,6 +1,6 @@
 import express from 'express';
 import { GameService } from '../application/service/gameService';
-import { TurnMySQLRepository } from '../infrastructure/repository/trun/turnMySQLRepository';
+import { TurnMySQLRepository } from '../infrastructure/repository/turn/turnMySQLRepository';
 import { GameMySQLRepository } from '../infrastructure/repository/game/gameMySQLRepository';
 
 export const gameRouter = express.Router();

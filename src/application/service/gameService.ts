@@ -4,8 +4,6 @@ import { connectMySql } from '../../infrastructure/connection';
 import { firstTurn } from '../../domain/model/turn/turn';
 import { Game } from '../../domain/model/game/game';
 import { ApplicationError } from '../error/applicationError';
-import { GameMySQLRepository } from '../../infrastructure/repository/game/gameMySQLRepository';
-import { TurnMySQLRepository } from '../../infrastructure/repository/trun/turnMySQLRepository';
 
 // TurnMySQLRepositoryをインスタンス化しているので、サービスクラスがinfrastructure層に依存していることとなる
 // 解決策として、Dependency Injectionを使う
