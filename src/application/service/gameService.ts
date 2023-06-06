@@ -1,19 +1,19 @@
-import { TurnRepository } from '../../domain/model/turn/turnRepository';
+import { TurnRepository } from './../../domain/model/turn/turnRepository';
+import { GameRepository } from '../../domain/model/game/gameRepository';
 import { connectMySql } from '../../infrastructure/connection';
 import { firstTurn } from '../../domain/model/turn/turn';
 import { Game } from '../../domain/model/game/game';
 import { ApplicationError } from '../error/applicationError';
-import { gameMySQLRepository } from '../../infrastructure/repository/game/gameMySQLRepository';
+import { GameMySQLRepository } from '../../infrastructure/repository/game/gameMySQLRepository';
 import { TurnMySQLRepository } from '../../infrastructure/repository/trun/turnMySQLRepository';
 
 // TurnMySQLRepositoryをインスタンス化しているので、サービスクラスがinfrastructure層に依存していることとなる
 // 解決策として、Dependency Injectionを使う
 // 依存性の注入とは、クラスの外部から依存するオブジェクトを渡すことで、クラス内部で依存オブジェクトを生成しないようにすること
 // connectMySqlはinfrastructure層に依存しているが、リポジトリへのconnectMySql依存は解消できている
-const turnRepository = new TurnMySQLRepository();
-const gameRepository = new gameMySQLRepository();
 
 export class GameService {
+  constructor(private _turnRepository: TurnRepository, private _gameRepository: GameRepository) {}
   async startNewGame() {
     const now = new Date();
     const conn = await connectMySql();
@@ -24,7 +24,7 @@ export class GameService {
       // 新しいゲームの作成
       const newGame = new Game(undefined, now);
 
-      const game = await gameRepository.save(conn, newGame);
+      const game = await this._gameRepository.save(conn, newGame);
 
       if (!game) throw new ApplicationError('LatestGameNotFound', 'Latest game not found');
       if (!game.id) throw new Error('game.id not exists');
@@ -33,7 +33,7 @@ export class GameService {
       const turn = firstTurn(game.id, now);
 
       // ターンの保存
-      await turnRepository.save(conn, turn);
+      await this._turnRepository.save(conn, turn);
 
       await conn.commit();
     } finally {

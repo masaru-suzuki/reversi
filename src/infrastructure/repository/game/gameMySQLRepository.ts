@@ -5,7 +5,7 @@ import { GameGateway } from './gameGateway';
 
 const gameGateway = new GameGateway();
 
-export class gameMySQLRepository implements GameRepository {
+export class GameMySQLRepository implements GameRepository {
   async findLatest(conn: mysql.Connection): Promise<Game | undefined> {
     const gameRecord = await gameGateway.findLatest(conn);
 
