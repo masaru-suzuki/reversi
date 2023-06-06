@@ -6,6 +6,7 @@ import { GameMySQLRepository } from '../infrastructure/repository/game/gameMySQL
 export const gameRouter = express.Router();
 
 // 依存性の注入とは、クラスの外部から依存するオブジェクトを渡すことで、クラス内部で依存オブジェクトを生成しないようにすること
+// プレゼンテーション層がinfrastructure層に依存しないようにするためには、DIContainerを使う
 const gameService = new GameService(new TurnMySQLRepository(), new GameMySQLRepository());
 
 gameRouter.post('/api/games', async (req, res) => {

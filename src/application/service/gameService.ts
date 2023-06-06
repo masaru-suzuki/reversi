@@ -9,6 +9,8 @@ import { ApplicationError } from '../error/applicationError';
 // 解決策として、Dependency Injectionを使う
 // 依存性の注入とは、クラスの外部から依存するオブジェクトを渡すことで、クラス内部で依存オブジェクトを生成しないようにすること
 // connectMySqlはinfrastructure層に依存しているが、リポジトリへのconnectMySql依存は解消できている
+// GameServiceのデータの参照先が変わったとしても、GameServiceのコードは変更する必要がない
+// 依存性の注入を行うことで、コードの変更に強いコードを書くことができる
 
 export class GameService {
   constructor(private _turnRepository: TurnRepository, private _gameRepository: GameRepository) {}
